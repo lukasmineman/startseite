@@ -1,50 +1,411 @@
----
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
----
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to <a href="https://docs.astro.build/"
-					>read the docs
-				</a> or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out <a
-					href="https://github.com/Charca/astro-blog-template"
-					>astro-blog-template
-				</a> by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Fox Who Chased the Moon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital@0;1&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a0f00;
+      --paper: #f5ede0;
+      --amber: #c96a1a;
+      --rust: #8b3a0f;
+      --dusk: #2b1e3a;
+      --moon: #f7e7c1;
+      --mist: #e8d9c5;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Lora', Georgia, serif;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── Sky header ── */
+    .sky {
+      position: relative;
+      min-height: 100vh;
+      background: linear-gradient(175deg, var(--dusk) 0%, #4a2c5a 40%, #a0522d 75%, var(--amber) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Stars */
+    .stars {
+      position: absolute; inset: 0;
+      pointer-events: none;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: #fff;
+      animation: twinkle var(--d, 3s) ease-in-out infinite;
+      opacity: 0;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; transform: scale(0.8); }
+      50%       { opacity: var(--o, 0.8); transform: scale(1.2); }
+    }
+
+    /* Moon */
+    .moon {
+      position: absolute;
+      top: 10%;
+      right: 18%;
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      background: var(--moon);
+      box-shadow: 0 0 40px 10px rgba(247,231,193,0.4), 0 0 80px 20px rgba(247,231,193,0.15);
+      animation: moonGlow 4s ease-in-out infinite;
+    }
+    @keyframes moonGlow {
+      0%, 100% { box-shadow: 0 0 40px 10px rgba(247,231,193,0.4), 0 0 80px 20px rgba(247,231,193,0.15); }
+      50%       { box-shadow: 0 0 60px 20px rgba(247,231,193,0.6), 0 0 120px 40px rgba(247,231,193,0.25); }
+    }
+
+    /* Fox SVG illustration */
+    .fox-wrap {
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 260px;
+      animation: foxBob 3s ease-in-out infinite;
+    }
+    @keyframes foxBob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(-8px); }
+    }
+
+    /* Ground silhouette */
+    .ground {
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 120px;
+      background: #0d0705;
+      clip-path: ellipse(60% 100% at 50% 100%);
+    }
+    .trees {
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 180px;
+      display: flex; align-items: flex-end;
+      pointer-events: none;
+    }
+
+    /* Title text */
+    .hero-text {
+      position: relative; z-index: 2;
+      text-align: center;
+      margin-bottom: 200px;
+      animation: fadeUp 1.2s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-text h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      color: var(--moon);
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    }
+    .hero-text h1 em {
+      color: var(--amber);
+      font-style: italic;
+    }
+    .hero-text .byline {
+      margin-top: 14px;
+      color: rgba(247,231,193,0.55);
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    /* ── Story sections ── */
+    .story {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 80px 30px 100px;
+    }
+
+    .chapter {
+      margin-bottom: 80px;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .chapter.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .chapter-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.75rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 12px;
+    }
+
+    .chapter h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      line-height: 1.2;
+      color: var(--rust);
+      margin-bottom: 20px;
+    }
+
+    .chapter p {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: #3a2010;
+    }
+    .chapter p + p { margin-top: 16px; }
+
+    .chapter p em {
+      color: var(--rust);
+      font-style: italic;
+    }
+
+    /* Decorative divider */
+    .divider {
+      display: flex; align-items: center; gap: 16px;
+      margin: 50px 0;
+      opacity: 0.35;
+    }
+    .divider span { flex: 1; height: 1px; background: var(--rust); }
+    .divider::before { content: "✦"; color: var(--amber); font-size: 1rem; }
+
+    /* Pull quote */
+    .pull {
+      border-left: 3px solid var(--amber);
+      padding: 12px 24px;
+      margin: 28px 0;
+      background: rgba(201,106,26,0.06);
+      border-radius: 0 8px 8px 0;
+    }
+    .pull p {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.15rem !important;
+      color: var(--rust) !important;
+    }
+
+    /* Inline fox paw emoji accent */
+    .accent {
+      display: inline-block;
+      font-size: 1.3em;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--dusk);
+      color: rgba(247,231,193,0.4);
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    footer span { color: var(--amber); }
+  </style>
+</head>
+<body>
+
+<!-- ── Hero ── -->
+<section class="sky">
+
+  <!-- Starfield -->
+  <div class="stars" id="stars"></div>
+
+  <!-- Moon -->
+  <div class="moon"></div>
+
+  <!-- Title -->
+  <div class="hero-text">
+    <h1>The Fox Who<br/>Chased the <em>Moon</em></h1>
+    <p class="byline">A small story for quiet evenings</p>
+  </div>
+
+  <!-- Ground -->
+  <div class="ground"></div>
+
+  <!-- Fox SVG -->
+  <div class="fox-wrap">
+    <svg viewBox="0 0 260 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Tail -->
+      <path d="M60 160 Q20 140 10 100 Q5 70 30 80 Q50 90 65 120 Z" fill="#c96a1a"/>
+      <path d="M30 80 Q5 70 10 100 Q5 80 25 90 Z" fill="#f5ede0"/>
+      <!-- Body -->
+      <ellipse cx="120" cy="155" rx="60" ry="35" fill="#c96a1a"/>
+      <!-- Head -->
+      <ellipse cx="170" cy="115" rx="38" ry="32" fill="#c96a1a"/>
+      <!-- Ears -->
+      <polygon points="148,90 140,55 165,82" fill="#c96a1a"/>
+      <polygon points="148,90 145,65 162,84" fill="#8b3a0f"/>
+      <polygon points="188,88 195,52 175,80" fill="#c96a1a"/>
+      <polygon points="187,88 192,63 177,82" fill="#8b3a0f"/>
+      <!-- Face white -->
+      <ellipse cx="176" cy="125" rx="22" ry="18" fill="#f5ede0"/>
+      <!-- Eyes -->
+      <circle cx="162" cy="110" r="5" fill="#1a0f00"/>
+      <circle cx="182" cy="110" r="5" fill="#1a0f00"/>
+      <circle cx="164" cy="108" r="1.5" fill="white"/>
+      <circle cx="184" cy="108" r="1.5" fill="white"/>
+      <!-- Nose -->
+      <ellipse cx="172" cy="122" rx="4" ry="3" fill="#8b3a0f"/>
+      <!-- Mouth -->
+      <path d="M168 125 Q172 130 176 125" stroke="#8b3a0f" stroke-width="1.5" fill="none"/>
+      <!-- Legs -->
+      <rect x="95"  y="180" width="16" height="18" rx="5" fill="#c96a1a"/>
+      <rect x="118" y="180" width="16" height="18" rx="5" fill="#c96a1a"/>
+      <rect x="141" y="180" width="16" height="18" rx="5" fill="#c96a1a"/>
+      <rect x="164" y="180" width="16" height="18" rx="5" fill="#c96a1a"/>
+    </svg>
+  </div>
+
+</section>
+
+<!-- ── Story ── -->
+<main class="story">
+
+  <div class="chapter" data-chapter>
+    <p class="chapter-num">Chapter I</p>
+    <h2>The Fox at the Edge of the Wood</h2>
+    <p>
+      There was once a small fox named <em>Ember</em>, who lived at the edge of a
+      great pine forest where the trees smelled of resin and cold rain. She had
+      bright copper fur, a white-tipped tail, and an unbearable habit of
+      wanting things she could not have.
+    </p>
+    <p>
+      Every night, she would sit on the mossy stone at the clearing's border and
+      stare up at the moon — round and silver, impossibly calm — and feel a
+      pull in her chest like a fishhook catching on a rib.
+    </p>
+    <div class="pull">
+      <p>"If I ran fast enough," she thought, "I could reach the hill where the
+      moon rests. I've seen it touch the treetops. I've seen it balance on the
+      mountain's shoulder. It cannot be that far."</p>
+    </div>
+  </div>
+
+  <div class="divider"><span></span></div>
+
+  <div class="chapter" data-chapter>
+    <p class="chapter-num">Chapter II</p>
+    <h2>The Long Chase</h2>
+    <p>
+      One autumn night, when the moon hung especially low and golden, Ember
+      decided to run. She leapt from the stone and sprinted across the meadow,
+      paws barely brushing the frost-tipped grass, tail streaming behind her
+      like a flame.
+    </p>
+    <p>
+      She ran past the old mill pond, past the three birches that grew twisted
+      together like friends whispering a secret, past the ridge of broken
+      stones where the rabbits slept. The moon sat always just ahead —
+      <em>close, so close</em> — perched on the next hill's crest.
+    </p>
+    <p>
+      She climbed that hill. The moon moved to the next. She climbed that one
+      too. And the next. Her breath came in silver puffs. Her paws ached. But
+      the moon was never where she arrived — only ever where she was going.
+    </p>
+  </div>
+
+  <div class="divider"><span></span></div>
+
+  <div class="chapter" data-chapter>
+    <p class="chapter-num">Chapter III</p>
+    <h2>What the River Told Her</h2>
+    <p>
+      Just before dawn, exhausted, Ember stopped beside a river she had never
+      seen before. She bent to drink — and there was the moon again, trembling
+      in the dark water below her nose.
+    </p>
+    <p>
+      She did not try to catch it. She was too tired for that. She only looked.
+    </p>
+    <div class="pull">
+      <p>The moon in the river looked back at her with the same patient,
+      indifferent light it always had. And for the first time, Ember noticed
+      that it was beautiful precisely because it could not be held.</p>
+    </div>
+    <p>
+      She curled up on the riverbank, tucked her nose under her tail, and slept
+      while the moon moved slowly overhead, keeping its own company, going
+      wherever moons go.
+    </p>
+  </div>
+
+  <div class="divider"><span></span></div>
+
+  <div class="chapter" data-chapter>
+    <p class="chapter-num">Epilogue</p>
+    <h2>Every Night, Still</h2>
+    <p>
+      Ember found her way home as the sun rose. She never chased the moon again.
+      But every evening she would return to her mossy stone, sit very still, and
+      watch it climb the sky — <em>and that was enough.</em>
+    </p>
+    <p>
+      Some things are not meant to be caught. They are meant to be followed at
+      a comfortable distance, with wonder, for as long as the night allows.
+    </p>
+    <p style="margin-top: 30px; font-family: 'Playfair Display', serif; font-style: italic; color: var(--amber); text-align: center; font-size: 1.1rem;">
+      — The End —
+    </p>
+  </div>
+
+</main>
+
+<footer>
+  A story about <span>wanting</span>, <span>chasing</span>, and finally <span>resting</span>.
+</footer>
+
+<script>
+  // Generate stars
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `
+      width: ${size}px; height: ${size}px;
+      top: ${Math.random() * 75}%;
+      left: ${Math.random() * 100}%;
+      --d: ${(Math.random() * 4 + 2).toFixed(1)}s;
+      --o: ${(Math.random() * 0.6 + 0.3).toFixed(2)};
+      animation-delay: ${(Math.random() * 5).toFixed(1)}s;
+    `;
+    container.appendChild(s);
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('[data-chapter]').forEach(el => observer.observe(el));
+</script>
+</body>
 </html>
